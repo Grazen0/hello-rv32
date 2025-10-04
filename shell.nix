@@ -1,19 +1,25 @@
 {
-  pkgs ? import <nixpkgs> { },
+  mkShell,
+
+  bear,
+  glibc_multi,
+  riscvPackages,
+  rv32-emu,
+  xxd,
 }:
-let
-  riscvCross = import <nixpkgs> {
-    crossSystem = {
-      config = "riscv32-none-elf";
-    };
-  };
-in
-pkgs.mkShell {
-  packages = with pkgs; [
-    dtc
-    riscvCross.buildPackages.binutils
-    riscvCross.buildPackages.gcc
-    spike
+mkShell {
+  hardeningDisable = [
+    "relro"
+    "bindnow"
+  ];
+
+  packages = [
+    bear
+    glibc_multi
+    riscvPackages.binutils
+    riscvPackages.gcc
+    riscvPackages.gdb
+    rv32-emu
     xxd
   ];
 }

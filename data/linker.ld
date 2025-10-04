@@ -1,14 +1,23 @@
 ENTRY(_start)
 
-MEMORY
-{
-  RAM (rxw) : ORIGIN = 0x0, LENGTH = 128K
-}
+SECTIONS {
+  . = 0x0;
 
-SECTIONS
-{
   .text : {
+    KEEP(*(.text.startup))
+    KEEP(*(.init))
     *(.text*)
-  } > RAM
-}
+    *(.rodata*)
+  }
 
+  .data : {
+    *(.data*)
+  }
+
+  .bss : {
+    *(.bss*)
+    *(COMMON)
+  }
+
+  _stack_top = 0xFFFFFFFF;
+}

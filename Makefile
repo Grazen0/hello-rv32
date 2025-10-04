@@ -1,6 +1,5 @@
-TARGET_EXEC := hello.elf
-DTB := memory.dtb
-
+TARGET_ELF := hello.elf
+TARGET_BIN := hello.bin
 
 BUILD_DIR := ./build
 SRC_DIRS := ./src
@@ -8,7 +7,6 @@ SRC_DIRS := ./src
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.s')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 LINKER := data/linker.ld
-DTS := data/memory.dts
 
 DEPS := $(OBJS:.o=.d)
 
@@ -17,36 +15,48 @@ ISA := RV32I
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CFLAGS := $(INC_FLAGS) -MMD -MP
-ASFLAGS := $(INC_FLAGS)
+CFLAGS := $(INC_FLAGS) -MMD -MP -nostdlib -march=rv32i -mabi=ilp32 -std=c23 -g -O0 -ffreestanding
 
-AS := riscv32-none-elf-as
 CC := riscv32-none-elf-gcc
-LD := riscv32-none-elf-ld
-PICORV32 := picorv32
+OBJCOPY := riscv32-none-elf-objcopy
 
-all: $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(DTB)
+RV32_EMU := rv32-emu
 
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(LD) $< -T data/linker.ld -o $@ $(LDFLAGS)
+GDB := riscv32-none-elf-gdb
+GDB_PORT := 3333
 
-$(BUILD_DIR)/%.c.o: %.c
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+BEAR := bear
+CDB := compile_commands.json
+
+all: $(BUILD_DIR)/$(TARGET_BIN)
+
+$(BUILD_DIR)/$(TARGET_BIN): $(BUILD_DIR)/$(TARGET_ELF)
+	$(OBJCOPY) -O binary $< $@
+
+$(BUILD_DIR)/$(TARGET_ELF): $(OBJS) $(LINKER)
+	$(CC) $(CFLAGS) -T $(LINKER) -o $@ $(OBJS) $(LDFLAGS)
+
+# $(BUILD_DIR)/%.c.o: %.c
+# 	mkdir -p $(dir $@)
+# 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/%.s.o: %.s
 	mkdir -p $(dir $@)
-	$(AS) $(ASFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/$(DTB): $(DTS)
-	dtc -I dts -O dtb -o $@ $<
+run: $(BUILD_DIR)/$(TARGET_BIN)
+	$(RV32_EMU) $(RV32_EMU_FLAGS) -p $(GDB_PORT) $<
 
-run: $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(DTB)
-	$(SPIKE) --isa=$(ISA) --dc=0x0:0x20000 $(BUILD_DIR)/$(TARGET_EXEC)
+debug: $(BUILD_DIR)/$(TARGET_ELF)
+	$(GDB) $<
 
 clean:
 	rm -r $(BUILD_DIR)
 
-.PHONY: all clean run
+compdb:
+	mkdir -p $(BUILD_DIR)
+	$(BEAR) --output $(BUILD_DIR)/$(CDB) -- make -B
+
+.PHONY: all clean run debug compdb
 
 -include $(DEPS)
