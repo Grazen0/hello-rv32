@@ -1,23 +1,23 @@
 ENTRY(_start)
 
+MEMORY {
+  RAM (rwx) : ORIGIN = 0x00000000, LENGTH = 4096M
+}
+
 SECTIONS {
   . = 0x0;
 
   .text : {
-    KEEP(*(.text.startup))
-    KEEP(*(.init))
     *(.text*)
     *(.rodata*)
-  }
+  } > RAM
 
   .data : {
     *(.data*)
-  }
+  } > RAM
 
   .bss : {
     *(.bss*)
     *(COMMON)
-  }
-
-  _stack_top = 0xFFFFFFFF;
+  } > RAM
 }

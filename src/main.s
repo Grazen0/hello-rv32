@@ -1,8 +1,8 @@
-.section .text.startup
+.section .text
 .globl _start
 
 _start:
-    la      sp, _stack_top
+    li      sp, 0xFFFFFFF0
 
     mv      s0, zero
     lui     s1, 0x80000
