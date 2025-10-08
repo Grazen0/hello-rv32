@@ -7,7 +7,7 @@ Powered by [my own RV32I emulator][rv32-emu]!
 ## Building
 
 ```bash
-# Compile and run the emulator
+# Compile the program and run the emulator
 make run
 
 # **In another terminal**, connect with GDB
