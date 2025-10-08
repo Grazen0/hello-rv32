@@ -1,21 +1,29 @@
 .section .text
 .globl _start
 
+# This program writes the first 20 Fibonacci numbers to memory starting at 0x80000000.
+
 _start:
     li      sp, 0xFFFFFFF0
 
     mv      s0, zero
-    lui     s1, 0x80000
+    li      s1, 0x80000000
+    li      s2, 20
 
 loop:
+    beq     s0, s2, end
+
     mv      a0, s0
     call    fib
 
-    sw      a0, 0(s1)
-    addi    s1, s1, 4
-    addi    s0, s0, 1
+    slli    t0, s0, 2
+    add     t0, s1, t0
+    sw      a0, 0(t0)
 
+    addi    s0, s0, 1
     j       loop
+end:
+    ebreak
 
 fib:
     li      t0, 2
