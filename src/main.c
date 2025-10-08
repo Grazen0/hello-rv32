@@ -1,25 +1,20 @@
 #include <stdint.h>
 
-#define AWESOME ((volatile uint32_t *)0x8000'0000)
+static uint32_t awesome[10] = {};
 
 static uint32_t fib(const uint32_t n)
 {
-    uint32_t a = 0;
-    uint32_t b = 1;
+    if (n <= 1)
+        return n;
 
-    for (uint32_t i = 0; i < n; ++i) {
-        const uint32_t tmp = a + b;
-        a = b;
-        b = tmp;
-    }
-
-    return a;
+    return fib(n - 1) + fib(n - 2);
 }
 
-void main(void)
+int main(void)
 {
     for (uint32_t i = 0; i < 10; ++i) {
-        uint32_t f = fib(i);
-        AWESOME[i] = f;
+        awesome[i] = fib(i);
     }
+
+    return 0;
 }
