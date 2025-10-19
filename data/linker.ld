@@ -5,7 +5,8 @@ MEMORY {
 }
 
 PHDRS {
-  rwx PT_LOAD FLAGS(7); /* RWX */
+  text PT_LOAD FLAGS(5); /* r-x */
+  data PT_LOAD FLAGS(6); /* rw- */
 }
 
 SECTIONS {
@@ -14,14 +15,14 @@ SECTIONS {
   .text : {
     *(.text*)
     *(.rodata*)
-  } > RAM :rwx
+  } > RAM :text
 
   .data : {
     *(.data*)
-  } > RAM :rwx
+  } > RAM :data
 
   .bss : {
     *(.bss*)
     *(COMMON)
-  } > RAM :rwx
+  } > RAM :data
 }
