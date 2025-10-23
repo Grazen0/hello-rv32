@@ -28,7 +28,7 @@
         let
           riscvCross = import nixpkgs {
             inherit system;
-            crossSystem.config = "riscv32-unknown-none-elf";
+            crossSystem.config = "riscv32-none-elf";
           };
         in
         {

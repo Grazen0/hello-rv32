@@ -14,11 +14,11 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CFLAGS := $(INC_FLAGS) -MMD -MP -nostdlib -march=rv32i -mabi=ilp32 -std=c23 -g
 
-CC := riscv32-unknown-none-elf-gcc
+CC := riscv32-none-elf-gcc
 
 RV32_EMU := rv32-emu
 
-GDB := riscv32-unknown-none-elf-gdb
+GDB := riscv32-none-elf-gdb
 GDB_PORT := 3333
 
 BEAR := bear
