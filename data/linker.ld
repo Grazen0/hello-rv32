@@ -4,25 +4,22 @@ MEMORY {
   RAM (rwx) : ORIGIN = 0x00000000, LENGTH = 4096M
 }
 
-PHDRS {
-  text PT_LOAD FLAGS(5); /* r-x */
-  data PT_LOAD FLAGS(6); /* rw- */
-}
-
 SECTIONS {
-  . = 0x0;
+  . = ORIGIN(RAM);
 
-  .text : {
+  .text : ALIGN(4) {
     *(.text*)
     *(.rodata*)
-  } > RAM :text
+  } > RAM
 
-  .data : {
+  .data : ALIGN(4) {
     *(.data*)
-  } > RAM :data
+  } > RAM
 
-  .bss : {
+  .bss : ALIGN(4) {
     *(.bss*)
     *(COMMON)
-  } > RAM :data
+  } > RAM
+
+  _end = .;
 }
