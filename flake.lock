@@ -113,11 +113,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1760836570,
-        "narHash": "sha256-mKPqT7UhooHtuj/kMB20ETUFBTkPWb812N+//dZmZEA=",
+        "lastModified": 1760836842,
+        "narHash": "sha256-WQUFqGl81PmQTtYw1AVJGCyO8+90fN59ByAhIx9bef0=",
         "owner": "Grazen0",
         "repo": "rv32-emu",
-        "rev": "1825110e7392d32ff32755760358f6342d3b6f59",
+        "rev": "e7f6d7548e2b3a6f14ea80f7083ed9e373be6e43",
         "type": "github"
       },
       "original": {
