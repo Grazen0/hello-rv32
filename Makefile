@@ -11,8 +11,7 @@ DEPS := $(OBJS:.o=.d)
 
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
-
-CFLAGS := $(INC_FLAGS) -MMD -MP -nostdlib -march=rv32i -mabi=ilp32 -std=c23 -g
+CFLAGS := $(INC_FLAGS) -MMD -MP -nostdlib -march=rv32if -mabi=ilp32 -std=c23 -ffreestanding -g
 
 CC := riscv32-none-elf-gcc
 
